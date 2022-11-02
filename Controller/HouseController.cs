@@ -5,7 +5,6 @@ using BMH.Service;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using BMH.Repository;
 using BMH.Domain;
 
 namespace BMH.Controller
@@ -22,11 +21,11 @@ namespace BMH.Controller
         }
 
         [Function(nameof(HouseController.GetHouses))]
-        public HttpResponseData GetHouses([HttpTrigger(AuthorizationLevel.Function, "get", Route = "house")] HttpRequestData req, HouseFilterQuery filterQuery)
+        public HttpResponseData GetHouses([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "house")] HttpRequestData req, HouseFilterQuery query)
         {
             List<HouseResponseDTO> responseDTO = new();
 
-            List<House> houses = _houseService.GetHousesInPriceRange(filterQuery);
+            List<House> houses = _houseService.GetHousesInPriceRange(query);
 
             foreach (House house in houses)
             {

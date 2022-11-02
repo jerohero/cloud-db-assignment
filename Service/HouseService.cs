@@ -26,8 +26,8 @@ namespace BMH.Service
 
         public List<House> GetHousesInPriceRange(HouseFilterQuery filter)
         {
-            int minPrice = filter?.MinPrice ?? 0;
-            int maxPrice = filter?.MaxPrice ?? int.MaxValue;
+            int minPrice = int.TryParse(filter?.Min, out minPrice) ? minPrice : 0;
+            int maxPrice = int.TryParse(filter?.Max, out maxPrice) ? minPrice : int.MaxValue;
 
             return _houseRepository
                 .GetAll()
