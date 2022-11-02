@@ -1,12 +1,12 @@
-using BMH.Domain.DTO;
+using Domain.DTO;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace BMH.Validators
+namespace Controller.Validator
 {
-    public class CustomerRequestDTOValidator : AbstractValidator<CustomerRequestDTO>
+    public class CustomerRequestDtoValidator : AbstractValidator<CustomerRequestDto>
     {
-        public CustomerRequestDTOValidator()
+        public CustomerRequestDtoValidator()
         {
             RuleFor(x => x.Email).NotEmpty();
             RuleFor(x => x.Email).MinimumLength(1).MaximumLength(50);
@@ -19,15 +19,13 @@ namespace BMH.Validators
             RuleFor(x => x.Income).LessThan(decimal.MaxValue);
         }
 
-        protected override bool PreValidate(ValidationContext<CustomerRequestDTO> context, ValidationResult result)
+        protected override bool PreValidate(ValidationContext<CustomerRequestDto> context, ValidationResult result)
         {
-            if (context.InstanceToValidate is null)
-            {
-                result.Errors.Add(new ValidationFailure("Invalid request", "Payload validation failed"));
-
-                return false;
-            }
-            return true;
+            if (context.InstanceToValidate is not null)
+                return true;
+            
+            result.Errors.Add(new ValidationFailure("Invalid request", "Payload validation failed"));
+            return false;
         }
     }
 }

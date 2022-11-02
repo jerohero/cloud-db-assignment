@@ -1,35 +1,35 @@
 using System.Net;
-using BMH.Domain.DTO;
-using BMH.Domain.Models;
-using BMH.Service;
+using AutoMapper;
+using Controller.Validator;
+using Domain.DTO;
+using Domain.Entity;
+using FluentValidation.Results;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using BMH.Domain;
 using Newtonsoft.Json;
-using BMH.Validators;
-using AutoMapper;
+using Service.Interface;
 
-namespace BMH.Controller
+namespace Controller
 {
     public class CustomerController
     {
         private readonly ILogger _logger;
-        private ICustomerService _customerService { get; }
-        private IMapper _mapper { get; }
+        private ICustomerService CustomerService { get; }
+        private IMapper Mapper { get; }
 
         public CustomerController(ILoggerFactory loggerFactory, ICustomerService customerService, IMapper mapper)
         {
             _logger = loggerFactory.CreateLogger<HouseController>();
-            _customerService = customerService;
-            _mapper = mapper;
+            CustomerService = customerService;
+            Mapper = mapper;
         }
 
-        [Function(nameof(CustomerController.CreateCustomer))]
+        [Function(nameof(CreateCustomer))]
         public async Task<HttpResponseData> CreateCustomer([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "customer")] HttpRequestData req)
         {
-            CustomerRequestDTO dto = JsonConvert.DeserializeObject<CustomerRequestDTO>(await new StreamReader(req.Body).ReadToEndAsync());
-            var validationResult = new CustomerRequestDTOValidator().Validate(dto);
+            CustomerRequestDto dto = JsonConvert.DeserializeObject<CustomerRequestDto>(await new StreamReader(req.Body).ReadToEndAsync());
+            ValidationResult validationResult = await new CustomerRequestDtoValidator().ValidateAsync(dto);
             if (!validationResult.IsValid)
             {
                 HttpResponseData error = req.CreateResponse(HttpStatusCode.BadRequest);
@@ -38,10 +38,10 @@ namespace BMH.Controller
                 return error;
             }
 
-            Customer created = _customerService.CreateCustomer(_mapper.Map<Customer>(dto));
+            Customer created = CustomerService.CreateCustomer(Mapper.Map<Customer>(dto));
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(_mapper.Map<CustomerResponseDTO>(created));
+            await response.WriteAsJsonAsync(Mapper.Map<CustomerResponseDto>(created));
 
             return response;
         }

@@ -1,20 +1,21 @@
-﻿using BMH.Domain;
-using BMH.Repository.Interfaces;
+﻿using Domain.Entity;
+using Repository.Interface;
+using Service.Interface;
 
-namespace BMH.Service
+namespace Service
 {
     public class CustomerService : ICustomerService
     {
-        private ICustomerRepository _customerRepository { get; }
+        private ICustomerRepository CustomerRepository { get; }
 
         public CustomerService(ICustomerRepository customerRepository)
         {
-            _customerRepository = customerRepository;
+            CustomerRepository = customerRepository;
         }
 
         public Customer CreateCustomer(Customer customer)
         {
-            return _customerRepository.Add(customer);
+            return CustomerRepository.Add(customer);
         }
     }
 }

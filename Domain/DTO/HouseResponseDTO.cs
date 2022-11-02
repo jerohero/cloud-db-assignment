@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using BMH.Repository;
+﻿using Domain.Entity;
+using Newtonsoft.Json;
 
-namespace BMH.Domain.DTO
+namespace Domain.DTO
 {
-    public class HouseResponseDTO
+    public class HouseResponseDto
     {
         [JsonRequired]
         public int Id { get; set; }
@@ -20,7 +20,7 @@ namespace BMH.Domain.DTO
         [JsonRequired]
         public List<string> Images { get; set; }
 
-        public HouseResponseDTO(House house, List<string> images)
+        public HouseResponseDto(House house, List<string> images)
         {
             Id = house.Id;
             Address = house.Address;

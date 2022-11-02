@@ -1,14 +1,14 @@
-﻿using BMH.DAL;
-using BMH.Domain;
-using BMH.Repository.Interfaces;
+﻿using DAL;
+using Domain.Entity;
+using Repository.Interface;
 
-namespace BMH.Repository
+namespace Repository
 {
-    public class HouseRepository : IBaseRepository<House>, IHouseRepository
+    public class HouseRepository : IHouseRepository
     {
-        private BMHContext Context { get; }
+        private BmhContext Context { get; }
 
-        public HouseRepository(BMHContext context)
+        public HouseRepository(BmhContext context)
         {
             Context = context;
         }
@@ -48,8 +48,7 @@ namespace BMH.Repository
 
         public House GetSingle(int id)
         {
-            return Context.Houses.Where(u => u.Id == id)
-                .FirstOrDefault();
+            return Context.Houses.FirstOrDefault(u => u.Id == id);
         }
 
         public House Update(House entity)

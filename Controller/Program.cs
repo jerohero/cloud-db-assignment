@@ -1,18 +1,19 @@
-using BMH.DAL;
-using BMH.Repository;
-using BMH.Repository.Interfaces;
-using BMH.Service;
+using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Repository;
+using Repository.Interface;
+using Service;
+using Service.Interface;
 
 string? sqlServer = Environment.GetEnvironmentVariable("SqlConnectionString");
 
-var host = new HostBuilder()
+IHost? host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices(services =>
     {
-        services.AddDbContext<BMHContext>(
+        services.AddDbContext<BmhContext>(
             options =>
             {
                 options.UseSqlServer(sqlServer);

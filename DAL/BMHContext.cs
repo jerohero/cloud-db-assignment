@@ -1,21 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BMH.Repository;
-using BMH.Domain;
+﻿using Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 
-namespace BMH.DAL;
-public class BMHContext : DbContext
-{
-    public DbSet<House> Houses { get; set; }
-    public DbSet<Customer> Customers { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+namespace DAL {
+    public sealed class BmhContext : DbContext
     {
-        modelBuilder.Entity<House>().Property(u => u.Id).ValueGeneratedOnAdd();
-        modelBuilder.Entity<Customer>().Property(u => u.Id).ValueGeneratedOnAdd();
-    }
+        public DbSet<House> Houses { get; }
+        public DbSet<Customer> Customers { get; }
 
-    public BMHContext(DbContextOptions<BMHContext> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<House>().Property(u => u.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Customer>().Property(u => u.Id).ValueGeneratedOnAdd();
+        }
+
+        public BmhContext(DbContextOptions<BmhContext> options, DbSet<House> houses, DbSet<Customer> customers) : base(options) {
+            Houses = houses;
+            Customers = customers;
+            Database.EnsureCreated();
+        }
+    }   
 }

@@ -1,14 +1,14 @@
-﻿using BMH.DAL;
-using BMH.Domain;
-using BMH.Repository.Interfaces;
+﻿using DAL;
+using Domain.Entity;
+using Repository.Interface;
 
-namespace BMH.Repository
+namespace Repository
 {
-    public class CustomerRepository : IBaseRepository<Customer>, ICustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
-        private BMHContext Context { get; }
+        private BmhContext Context { get; }
 
-        public CustomerRepository(BMHContext context)
+        public CustomerRepository(BmhContext context)
         {
             Context = context;
         }
@@ -48,8 +48,7 @@ namespace BMH.Repository
 
         public Customer GetSingle(int id)
         {
-            return Context.Customers.Where(u => u.Id == id)
-                .FirstOrDefault();
+            return Context.Customers.FirstOrDefault(u => u.Id == id);
         }
 
         public Customer Update(Customer entity)

@@ -1,6 +1,6 @@
-using BMH.Domain;
+using Domain.Entity;
 
-namespace BMH.Repository.Interfaces
+namespace Repository.Interface
 {
     public interface IHouseRepository : IBaseRepository<House>
     {

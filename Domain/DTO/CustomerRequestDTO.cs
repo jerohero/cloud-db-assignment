@@ -1,14 +1,12 @@
-﻿using Newtonsoft.Json;
-
-namespace BMH.Domain.DTO
+﻿namespace Domain.DTO
 {
-    public class CustomerRequestDTO
+    public class CustomerRequestDto
     {
         public string Name { get; set; }
         public string Email { get; set; }
         public decimal Income { get; set; }
 
-        public CustomerRequestDTO()
+        public CustomerRequestDto()
         {
         }
     }

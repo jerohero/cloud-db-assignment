@@ -1,7 +1,6 @@
-using BMH.Domain;
-using BMH.Domain.Models;
+using Domain.Entity;
 
-namespace BMH.Service
+namespace Service.Interface
 {
     public interface ICustomerService
     {

@@ -1,6 +1,6 @@
-using BMH.Repository.Interface;
+using Domain.Interface;
 
-namespace BMH.Repository.Interfaces
+namespace Repository.Interface
 {
     public interface IBaseRepository<T> where T : class, IBaseEntity, new()
     {

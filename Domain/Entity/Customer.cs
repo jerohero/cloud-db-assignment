@@ -1,6 +1,6 @@
-﻿using BMH.Repository.Interface;
+﻿using Domain.Interface;
 
-namespace BMH.Domain
+namespace Domain.Entity
 {
     public class Customer : IBaseEntity
     {

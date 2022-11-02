@@ -1,39 +1,36 @@
 using System.Net;
-using BMH.Domain.DTO;
-using BMH.Domain.Models;
-using BMH.Service;
+using Domain.DTO;
+using Domain.Entity;
+using Domain.Model;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using BMH.Domain;
+using Service.Interface;
 
-namespace BMH.Controller
+namespace Controller
 {
     public class HouseController
     {
         private readonly ILogger _logger;
-        private IHouseService _houseService { get; }
+        private IHouseService HouseService { get; }
 
         public HouseController(ILoggerFactory loggerFactory, IHouseService houseService)
         {
             _logger = loggerFactory.CreateLogger<HouseController>();
-            _houseService = houseService;
+            HouseService = houseService;
         }
 
-        [Function(nameof(HouseController.GetHouses))]
+        [Function(nameof(GetHouses))]
         public HttpResponseData GetHouses([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "house")] HttpRequestData req, HouseFilterQuery query)
         {
-            List<HouseResponseDTO> responseDTO = new();
+            IEnumerable<House> houses = HouseService.GetHousesInPriceRange(query);
 
-            List<House> houses = _houseService.GetHousesInPriceRange(query);
-
-            foreach (House house in houses)
-            {
-                responseDTO.Add(new(house, _houseService.GetHouseImages(house)));
-            }
+            List<HouseResponseDto> responseDto = houses.Select(house => 
+                new HouseResponseDto(house, HouseService.GetHouseImages(house))
+            ).ToList();
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.WriteAsJsonAsync(responseDTO);
+            req.CreateResponse(HttpStatusCode.OK).WriteAsJsonAsync(responseDto);
 
             return response;
         }

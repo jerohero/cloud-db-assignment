@@ -1,4 +1,4 @@
-﻿namespace BMH.Repository.Interface
+﻿namespace Domain.Interface
 {
     public interface IBaseEntity
     {

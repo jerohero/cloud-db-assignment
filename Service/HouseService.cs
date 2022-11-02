@@ -1,35 +1,36 @@
 ﻿using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using BMH.Repository.Interfaces;
-using BMH.Domain;
-using BMH.Domain.Models;
+using Domain.Entity;
+using Domain.Model;
+using Repository.Interface;
+using Service.Interface;
 
-namespace BMH.Service
+namespace Service
 {
     public class HouseService : IHouseService
     {
-        private const string HOUSES_IMAGES_BLOB_CONTAINER = "houses-images";
+        private const string HousesImagesBlobContainer = "houses-images";
         private readonly string _connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage", EnvironmentVariableTarget.Process);
-        private IHouseRepository _houseRepository { get; }
-        private BlobServiceClient _blobServiceClient { get; }
-        private BlobContainerClient _blobContainerClient { get; }
-        private string _containerUrl { get; }
+        private IHouseRepository HouseRepository { get; }
+        private BlobServiceClient BlobServiceClient { get; }
+        private BlobContainerClient BlobContainerClient { get; }
+        private string ContainerUrl { get; }
 
         public HouseService(IHouseRepository houseRepository)
         {
-            _houseRepository = houseRepository;
-            _blobServiceClient = new(_connectionString);
-            _blobContainerClient = _blobServiceClient.GetBlobContainerClient(HOUSES_IMAGES_BLOB_CONTAINER);
-            _containerUrl = _blobContainerClient.Uri.ToString();
+            HouseRepository = houseRepository;
+            BlobServiceClient = new BlobServiceClient(_connectionString);
+            BlobContainerClient = BlobServiceClient.GetBlobContainerClient(HousesImagesBlobContainer);
+            ContainerUrl = BlobContainerClient.Uri.ToString();
         }
 
-        public List<House> GetHousesInPriceRange(HouseFilterQuery filter)
+        public IEnumerable<House> GetHousesInPriceRange(HouseFilterQuery filter)
         {
             int minPrice = int.TryParse(filter?.Min, out minPrice) ? minPrice : 0;
             int maxPrice = int.TryParse(filter?.Max, out maxPrice) ? minPrice : int.MaxValue;
 
-            return _houseRepository
+            return HouseRepository
                 .GetAll()
                 .Where(o => o.Price >= minPrice && o.Price <= maxPrice)
                 .ToList();
@@ -37,17 +38,11 @@ namespace BMH.Service
 
         public List<string> GetHouseImages(House house)
         {
-            List<string> images = new();
             string blobPath = $"{house.City}/{house.Id}";
 
-            Pageable<BlobItem> blobs = _blobContainerClient.GetBlobs(prefix: blobPath);
+            Pageable<BlobItem> blobs = BlobContainerClient.GetBlobs(prefix: blobPath);
 
-            foreach (BlobItem blob in blobs)
-            {
-                images.Add($"{_containerUrl}/{blob.Name}");
-            }
-
-            return images;
+            return blobs.Select(blob => $"{ContainerUrl}/{blob.Name}").ToList();
         }
     }
 }
