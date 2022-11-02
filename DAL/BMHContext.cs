@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repository;
+using BMH.Repository;
+using BMH.Domain;
 
 namespace BMH.DAL;
 public class BMHContext : DbContext

@@ -1,10 +1,11 @@
-using Repository;
-using VRefSolutions.Domain.Models;
+using BMH.Domain;
+using BMH.Domain.Models;
 
-namespace BMH.Service.Interfaces
+namespace BMH.Service
 {
     public interface IHouseService
     {
         public List<House> GetHousesInPriceRange(HouseFilterQuery filter);
+        public List<string> GetHouseImages(House house);
     }
 }

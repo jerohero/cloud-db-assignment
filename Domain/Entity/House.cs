@@ -1,11 +1,6 @@
-﻿using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BMH.Repository.Interface;
 
-namespace Repository
+namespace BMH.Domain
 {
     public class House : IBaseEntity
     {

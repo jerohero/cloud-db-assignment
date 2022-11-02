@@ -1,6 +1,6 @@
 ﻿using BMH.DAL;
+using BMH.Domain;
 using BMH.Repository.Interfaces;
-using Repository;
 
 namespace BMH.Repository
 {

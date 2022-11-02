@@ -1,13 +1,14 @@
 using System.Net;
-using Azure;
-using BMH.Service.Interfaces;
+using BMH.Domain.DTO;
+using BMH.Domain.Models;
+using BMH.Service;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Repository;
-using VRefSolutions.Domain.Models;
+using BMH.Repository;
+using BMH.Domain;
 
-namespace BMH
+namespace BMH.Controller
 {
     public class HouseController
     {
@@ -23,10 +24,17 @@ namespace BMH
         [Function(nameof(HouseController.GetHouses))]
         public HttpResponseData GetHouses([HttpTrigger(AuthorizationLevel.Function, "get", Route = "house")] HttpRequestData req, HouseFilterQuery filterQuery)
         {
+            List<HouseResponseDTO> responseDTO = new();
+
             List<House> houses = _houseService.GetHousesInPriceRange(filterQuery);
 
+            foreach (House house in houses)
+            {
+                responseDTO.Add(new(house, _houseService.GetHouseImages(house)));
+            }
+
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.WriteAsJsonAsync(houses);
+            response.WriteAsJsonAsync(responseDTO);
 
             return response;
         }

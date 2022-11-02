@@ -2,7 +2,6 @@ using BMH.DAL;
 using BMH.Repository;
 using BMH.Repository.Interfaces;
 using BMH.Service;
-using BMH.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,5 +23,4 @@ var host = new HostBuilder()
     })
     .Build();
 
-host.Run();
 host.Run();

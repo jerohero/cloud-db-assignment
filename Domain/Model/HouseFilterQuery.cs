@@ -1,5 +1,5 @@
 
-namespace VRefSolutions.Domain.Models
+namespace BMH.Domain.Models
 {
     public class HouseFilterQuery
     {
