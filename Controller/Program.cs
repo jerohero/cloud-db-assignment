@@ -19,7 +19,9 @@ var host = new HostBuilder()
                 options.EnableSensitiveDataLogging();
             });
         services.AddSingleton<IHouseService, HouseService>();
+        services.AddSingleton<ICustomerService, CustomerService>();
         services.AddScoped<IHouseRepository, HouseRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
     })
     .Build();
 
