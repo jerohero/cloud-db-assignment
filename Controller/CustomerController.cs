@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using BMH.Domain;
 using Newtonsoft.Json;
 using BMH.Validators;
+using AutoMapper;
 
 namespace BMH.Controller
 {
@@ -15,11 +16,13 @@ namespace BMH.Controller
     {
         private readonly ILogger _logger;
         private ICustomerService _customerService { get; }
+        private IMapper _mapper { get; }
 
-        public CustomerController(ILoggerFactory loggerFactory, ICustomerService customerService)
+        public CustomerController(ILoggerFactory loggerFactory, ICustomerService customerService, IMapper mapper)
         {
             _logger = loggerFactory.CreateLogger<HouseController>();
             _customerService = customerService;
+            _mapper = mapper;
         }
 
         [Function(nameof(CustomerController.CreateCustomer))]
@@ -35,8 +38,10 @@ namespace BMH.Controller
                 return error;
             }
 
+            Customer created = _customerService.CreateCustomer(_mapper.Map<Customer>(dto));
+
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            response.WriteAsJsonAsync("");
+            await response.WriteAsJsonAsync(_mapper.Map<CustomerResponseDTO>(created));
 
             return response;
         }

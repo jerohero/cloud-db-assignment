@@ -5,5 +5,6 @@ namespace BMH.Service
 {
     public interface ICustomerService
     {
+        public Customer CreateCustomer(Customer customer);
     }
 }
