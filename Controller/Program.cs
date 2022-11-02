@@ -1,4 +1,8 @@
 using BMH.DAL;
+using BMH.Repository;
+using BMH.Repository.Interfaces;
+using BMH.Service;
+using BMH.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,9 +19,8 @@ var host = new HostBuilder()
                 options.UseSqlServer(sqlServer);
                 options.EnableSensitiveDataLogging();
             });
-        services.AddAutoMapper(cfg =>
-        {
-        });
+        services.AddSingleton<IHouseService, HouseService>();
+        services.AddScoped<IHouseRepository, HouseRepository>();
     })
     .Build();
 
