@@ -7,5 +7,6 @@ namespace Service.Interface
     {
         public void GenerateUserMortgageDocuments();
         public int CalculateMortgage(int income);
+        public void MailUserMortgageDocuments();
     }
 }

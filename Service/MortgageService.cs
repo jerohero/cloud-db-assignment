@@ -2,6 +2,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
+using Azure.Storage.Sas;
 using Domain.Entity;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
@@ -19,17 +20,17 @@ namespace Service
         private const string MortgageOffersBlobContainer = "mortgage-offers";
         private readonly string _connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage", EnvironmentVariableTarget.Process);
         private ICustomerService CustomerService { get; }
+        private IEmailService EmailService { get; }
         private BlobServiceClient BlobServiceClient { get; }
         private BlobContainerClient BlobContainerClient { get; }
-        private string ContainerUrl { get; }
         private ILogger _logger { get; set; }
 
-        public MortgageService(ICustomerService customerService, ILoggerFactory loggerFactory)
+        public MortgageService(ICustomerService customerService, IEmailService emailService, ILoggerFactory loggerFactory)
         {
             BlobServiceClient = new BlobServiceClient(_connectionString);
             BlobContainerClient = BlobServiceClient.GetBlobContainerClient(MortgageOffersBlobContainer);
-            ContainerUrl = BlobContainerClient.Uri.ToString();
             CustomerService = customerService;
+            EmailService = emailService;
             _logger = loggerFactory.CreateLogger<MortgageService>();
         }
 
@@ -42,11 +43,38 @@ namespace Service
                 int mortgage = CalculateMortgage(customer.Income);
 
                 PdfDocument pdf = GenerateMortgagePdf(mortgage, customer);
-                MemoryStream stream = new MemoryStream();
+                MemoryStream stream = new();
                 pdf.Save(stream, false);
 
                 BlobClient blobClient = BlobContainerClient.GetBlobClient($"{customer.Id}/mortgage.pdf");
                 blobClient.UploadAsync(stream, true);
+            }
+        }
+
+        public void MailUserMortgageDocuments()
+        {
+            List<Customer> customers = CustomerService.GetAll();
+
+            foreach (Customer customer in customers)
+            {
+                BlobClient blobClient = BlobContainerClient.GetBlobClient($"{customer.Id}/mortgage.pdf");
+
+                if (!blobClient.Exists())
+                    continue;
+
+                BlobSasBuilder sasBuilder = new()
+                {
+                    StartsOn = DateTimeOffset.UtcNow,
+                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(18),
+                    BlobContainerName = MortgageOffersBlobContainer,
+                    BlobName = blobClient.Name
+                };
+                sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+                string sasBlobUri = blobClient.GenerateSasUri(sasBuilder).AbsoluteUri;
+                string mailText = $"Good morning {customer.Name},\nYour daily mortgage is ready.\n{sasBlobUri}";
+
+                EmailService.SendEmail(customer.Email, "BuyMyHouse | Daily mortgage", mailText);
             }
         }
 

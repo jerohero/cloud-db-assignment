@@ -28,16 +28,16 @@ namespace Controller
             Mapper = mapper;
         }
 
-        [Function(nameof(MortgageTrigger))]
-        public void MortgageTrigger([TimerTrigger("0 0 * * *")] TimerInfo timer)
+        [Function(nameof(GenerateMortgageDocuments))]
+        public void GenerateMortgageDocuments([TimerTrigger("0 0 * * *")] TimerInfo timer)
         {
             MortgageService.GenerateUserMortgageDocuments();
         }
 
-        [Function(nameof(MortgageTriggerTest))]
-        public void MortgageTriggerTest([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "mortgage")] HttpRequestData req)
+        [Function(nameof(MailMortgageDocuments))]
+        public void MailMortgageDocuments([TimerTrigger("0 6 * * *")] TimerInfo timer)
         {
-            MortgageService.GenerateUserMortgageDocuments();
+            MortgageService.MailUserMortgageDocuments();
         }
     }
 }

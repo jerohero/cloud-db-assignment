@@ -11,7 +11,6 @@ namespace Domain.Entity
 
         public House()
         {
-
         }
     }
 }
