@@ -1,21 +1,21 @@
 ﻿using Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace DAL {
     public sealed class BmhContext : DbContext
     {
-        public DbSet<House> Houses { get; }
-        public DbSet<Customer> Customers { get; }
+        public DbSet<House> Houses { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<House>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Customer>().Property(u => u.Id).ValueGeneratedOnAdd();
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Customer>().Property(u => u.Id).ValueGeneratedOnAdd().UseIdentityColumn();
+            modelBuilder.Entity<House>().Property(u => u.Id).ValueGeneratedOnAdd().UseIdentityColumn();
         }
 
-        public BmhContext(DbContextOptions<BmhContext> options, DbSet<House> houses, DbSet<Customer> customers) : base(options) {
-            Houses = houses;
-            Customers = customers;
+        public BmhContext(DbContextOptions<BmhContext> options) : base(options) {
             Database.EnsureCreated();
         }
     }   

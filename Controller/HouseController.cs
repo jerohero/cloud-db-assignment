@@ -30,7 +30,7 @@ namespace Controller
             ).ToList();
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            req.CreateResponse(HttpStatusCode.OK).WriteAsJsonAsync(responseDto);
+            response.WriteAsJsonAsync(responseDto);
 
             return response;
         }

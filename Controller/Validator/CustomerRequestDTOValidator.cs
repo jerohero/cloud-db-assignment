@@ -16,7 +16,7 @@ namespace Controller.Validator
 
             RuleFor(x => x.Income).NotEmpty();
             RuleFor(x => x.Income).GreaterThan(0);
-            RuleFor(x => x.Income).LessThan(decimal.MaxValue);
+            RuleFor(x => x.Income).LessThan(int.MaxValue);
         }
 
         protected override bool PreValidate(ValidationContext<CustomerRequestDto> context, ValidationResult result)

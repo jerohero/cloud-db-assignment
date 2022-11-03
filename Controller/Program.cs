@@ -1,4 +1,6 @@
 using DAL;
+using Domain.DTO;
+using Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +21,11 @@ IHost? host = new HostBuilder()
                 options.UseSqlServer(sqlServer);
                 options.EnableSensitiveDataLogging();
             });
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.CreateMap<CustomerRequestDto, Customer>();
+            cfg.CreateMap<Customer, CustomerResponseDto>();
+        });
         services.AddSingleton<IHouseService, HouseService>();
         services.AddSingleton<ICustomerService, CustomerService>();
         services.AddScoped<IHouseRepository, HouseRepository>();
