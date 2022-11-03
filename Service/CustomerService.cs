@@ -17,5 +17,10 @@ namespace Service
         {
             return CustomerRepository.Add(customer);
         }
+
+        public List<Customer> GetAll()
+        {
+            return CustomerRepository.GetAll().ToList();
+        }
     }
 }

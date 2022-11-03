@@ -28,6 +28,7 @@ IHost? host = new HostBuilder()
         });
         services.AddSingleton<IHouseService, HouseService>();
         services.AddSingleton<ICustomerService, CustomerService>();
+        services.AddSingleton<IMortgageService, MortgageService>();
         services.AddScoped<IHouseRepository, HouseRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
     })
