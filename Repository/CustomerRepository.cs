@@ -20,6 +20,11 @@ namespace Repository
             return entity;
         }
 
+        public bool IsEmailUnique(string email)
+        {
+            return !Context.Customers.Where(c => c.Email.Equals(email)).Any();
+        }
+
         public void Commit()
         {
             Context.SaveChanges();
@@ -48,7 +53,7 @@ namespace Repository
 
         public Customer GetSingle(int id)
         {
-            return Context.Customers.FirstOrDefault(u => u.Id == id);
+            return Context.Customers.FirstOrDefault(c => c.Id == id);
         }
 
         public Customer Update(Customer entity)

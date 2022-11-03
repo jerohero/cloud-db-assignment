@@ -15,6 +15,9 @@ namespace Service
 
         public Customer CreateCustomer(Customer customer)
         {
+            if (!CustomerRepository.IsEmailUnique(customer.Email))
+                throw new Exception("A customer with this email address already exists.");
+
             return CustomerRepository.Add(customer);
         }
 

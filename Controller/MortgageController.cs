@@ -1,14 +1,7 @@
-using System.Net;
 using AutoMapper;
-using Controller.Validator;
-using Domain.DTO;
-using Domain.Entity;
-using Domain.Model;
-using FluentValidation.Results;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Service.Interface;
 
 namespace Controller
@@ -31,13 +24,25 @@ namespace Controller
         [Function(nameof(GenerateMortgageDocuments))]
         public void GenerateMortgageDocuments([TimerTrigger("0 0 * * *")] TimerInfo timer)
         {
-            MortgageService.GenerateUserMortgageDocuments();
+            MortgageService.GenerateCustomerMortgageDocuments();
         }
 
         [Function(nameof(MailMortgageDocuments))]
         public void MailMortgageDocuments([TimerTrigger("0 6 * * *")] TimerInfo timer)
         {
-            MortgageService.MailUserMortgageDocuments();
+            MortgageService.MailCustomerMortgageDocuments();
+        }
+
+        [Function(nameof(MortgageTriggerTest))]
+        public void MortgageTriggerTest([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "mortgage")] HttpRequestData req)
+        {
+            MortgageService.GenerateCustomerMortgageDocuments();
+        }
+
+        [Function(nameof(MailTriggerTest))]
+        public void MailTriggerTest([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "mail")] HttpRequestData req)
+        {
+            MortgageService.MailCustomerMortgageDocuments();
         }
     }
 }

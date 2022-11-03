@@ -10,6 +10,7 @@ namespace Controller.Validator
         {
             RuleFor(x => x.Email).NotEmpty();
             RuleFor(x => x.Email).MinimumLength(1).MaximumLength(50);
+            RuleFor(x => x.Email).EmailAddress();
 
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Name).MinimumLength(1).MaximumLength(50);

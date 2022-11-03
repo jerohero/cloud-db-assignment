@@ -34,15 +34,23 @@ namespace Controller
             {
                 HttpResponseData error = req.CreateResponse(HttpStatusCode.BadRequest);
                 await error.WriteStringAsync(validationResult.ToString());
-
                 return error;
             }
 
-            Customer created = CustomerService.CreateCustomer(Mapper.Map<Customer>(dto));
+            Customer createdCustomer;
+            try
+            {
+                createdCustomer = CustomerService.CreateCustomer(Mapper.Map<Customer>(dto));
+            }
+            catch (Exception e)
+            {
+                HttpResponseData error = req.CreateResponse(HttpStatusCode.Conflict);
+                await error.WriteStringAsync(e.Message);
+                return error;
+            }
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(Mapper.Map<CustomerResponseDto>(created));
-
+            await response.WriteAsJsonAsync(Mapper.Map<CustomerResponseDto>(createdCustomer));
             return response;
         }
     }

@@ -34,7 +34,7 @@ namespace Service
             _logger = loggerFactory.CreateLogger<MortgageService>();
         }
 
-        public void GenerateUserMortgageDocuments()
+        public void GenerateCustomerMortgageDocuments()
         {
             List<Customer> customers = CustomerService.GetAll();
 
@@ -51,7 +51,7 @@ namespace Service
             }
         }
 
-        public void MailUserMortgageDocuments()
+        public void MailCustomerMortgageDocuments()
         {
             List<Customer> customers = CustomerService.GetAll();
 

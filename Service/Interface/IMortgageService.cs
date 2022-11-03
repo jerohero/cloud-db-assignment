@@ -5,8 +5,8 @@ namespace Service.Interface
 {
     public interface IMortgageService
     {
-        public void GenerateUserMortgageDocuments();
+        public void GenerateCustomerMortgageDocuments();
         public int CalculateMortgage(int income);
-        public void MailUserMortgageDocuments();
+        public void MailCustomerMortgageDocuments();
     }
 }

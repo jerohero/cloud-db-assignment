@@ -27,7 +27,14 @@ namespace Service
             EmailRecipients emailRecipients = new EmailRecipients(new List<EmailAddress>() { new EmailAddress(to) });
             EmailMessage emailMessage = new(_emailSender, emailContent, emailRecipients);
 
-           emailClient.Send(emailMessage);
+            try
+            {
+                emailClient.Send(emailMessage);
+            }
+            catch (ArgumentException e)
+            {
+                _logger.LogError($"An error occurred while sending an email to {to}: {e.Message}");
+            }
         }
     }
 }
